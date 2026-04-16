@@ -24,7 +24,7 @@ builder.Services.AddSingleton<ICorsPolicyProvider, InfraCorsPolicyProvider>();
 MongoDB.Bson.Serialization.BsonSerializer.RegisterSerializer(new MongoDB.Bson.Serialization.Serializers.GuidSerializer(MongoDB.Bson.GuidRepresentation.Standard));
 
 var isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-var defaultId = isDocker ? "host.docker.internal" : "localhost";
+var defaultId = isDocker ? "db" : "localhost";
 var mongoClient = new MongoDB.Driver.MongoClient(builder.Configuration.GetConnectionString("Mongo") ?? $"mongodb://{defaultId}:27017");
 builder.Services.AddSingleton<IMongoDatabase>(mongoClient.GetDatabase("ElectionsDB"));
 builder.Services.AddSingleton<UserLogic>();
