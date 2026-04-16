@@ -1,0 +1,156 @@
+<div class="survey-feature">
+    @if (aggregatedResults.length > 0) {
+        <section class="aggregated-results glass-card mb-5">
+            <h2 class="mb-4 text-center">{{ 'CURRENT_AVERAGE' | translate }}</h2>
+            <div class="results-grid">
+                @for (result of aggregatedResults.slice(0, 6); track result.partyId) {
+                    <div class="result-item">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="party-name">{{ getPartyName(result.partyId) }}</span>
+                            <span class="mandates-avg">{{ result.averageMandates | number:'1.1-1' }}</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" [style.width.%]="(result.averageMandates / 60) * 100"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    <section class="survey-form glass-card">
+        <div class="survey-form-header d-flex flex-column flex-md-row align-items-center gap-4 mb-5">
+            <div class="pie-chart-container d-flex flex-column flex-sm-row align-items-center gap-4">
+                <div class="pie-chart" [style.background]="getConicGradient()">
+                    <div class="inner-circle">
+                         <div class="total-text">{{ totalMandates }}</div>
+                         <div class="total-label">/ 120</div>
+                    </div>
+                </div>
+                
+                @if (partiesWithVotes.length > 0) {
+                    <div class="chart-legend">
+                        @for (item of getPieChartData(); track item.name) {
+                            <div class="legend-item">
+                                <span class="color-dot" [style.background-color]="item.color"></span>
+                                <span class="party-name">{{ item.name }}</span>
+                                <span class="mandate-count">{{ item.percentage * 1.2 | number:'1.0-0' }}</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="mandate-counter flex-grow-1" [class.not-120]="totalMandates !== 120" [class.perfect]="totalMandates === 120">
+                <h2>{{ 'CHOOSE_PARTIES' | translate }}</h2>
+                {{ 'TOTAL_MANDATES' | translate }}: <span>{{ totalMandates }}</span> / 120
+                @if (totalMandates < 120) {
+                    <small class="info-text d-block">{{ 'MANDATES_MISSING' | translate:{count: 120 - totalMandates} }}</small>
+                }
+                @if (totalMandates > 120) {
+                    <small class="error-text d-block">{{ 'MANDATES_EXCEEDED' | translate:{count: totalMandates - 120} }}</small>
+                }
+                @if (totalMandates === 120) {
+                    <small class="success-text d-block">{{ 'MANDATES_PERFECT' | translate }}</small>
+                }
+            </div>
+        </div>
+
+        <div class="parties-grid">
+            @for (party of parties; track party.id) {
+                <div class="party-card" 
+                     [class.selected]="party.mandates > 0"
+                     [class.invalid-input]="party.mandates < 0 || party.mandates > 120">
+                    <div class="party-image-container" (click)="party.mandates = party.mandates || 1">
+                        @if (party.imageUrl) {
+                            <img [src]="party.imageUrl" class="party-image" [alt]="party.name">
+                        } @else {
+                            <div class="party-placeholder">
+                                {{ party.name[0] }}
+                            </div>
+                        }
+                    </div>
+                    <div class="party-info">
+                        <h3>{{ party.name }}</h3>
+                        <p class="leader">{{ party.leader }}</p>
+                    </div>
+                    <div class="mandate-input">
+                        <input type="number" 
+                               min="0" 
+                               max="120" 
+                               #mandateInput="ngModel"
+                               [(ngModel)]="party.mandates" 
+                               class="form-control mb-2"
+                               [class.is-invalid]="party.mandates < 0 || party.mandates > 120">
+                        <input type="range" min="0" max="120" [(ngModel)]="party.mandates" class="form-range">
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary btn-lg w-100 py-3" (click)="submitSurvey()" [disabled]="isSubmitting || totalMandates !== 120">
+                @if (isSubmitting) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                {{ 'SAVE_SURVEY' | translate }}
+            </button>
+        </div>
+    </section>
+
+    <section class="recent-surveys mt-5">
+        <h2 class="mb-4">{{ 'RECENT_SURVEYS' | translate }}</h2>
+        <div class="surveys-list">
+            @for (survey of surveys; track survey.id) {
+                <div class="survey-item glass-card mb-3">
+                    <div class="survey-header d-flex justify-content-end mb-3 text-dim">
+                        <span>{{ survey.created | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                    
+                    <div class="votes-summary d-flex flex-wrap gap-2 mb-3">
+                        @for (vote of survey.votes; track vote.partyId) {
+                            <div class="vote-chip px-3 py-1 rounded-pill">
+                                 {{ getPartyName(vote.partyId) }}: <strong>{{ vote.mandates }}</strong>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="survey-footer d-flex justify-content-between align-items-center pt-3 border-top border-light">
+                        <div class="reactions d-flex gap-2 align-items-center">
+                            <button class="btn btn-sm btn-outline-success" (click)="like(survey)">
+                                <i class="bi bi-hand-thumbs-up"></i> {{ survey.likesCount }}
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" (click)="dislike(survey)">
+                                <i class="bi bi-hand-thumbs-down"></i> {{ survey.dislikesCount }}
+                            </button>
+                            
+                            <div class="ms-3 d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary" (click)="openShare(survey)" [title]="'VIEW_SURVEY' | translate">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" (click)="copyLink(survey)" [title]="'COPY_LINK' | translate">
+                                    <i class="bi bi-link-45deg"></i>
+                                </button>
+                            </div>
+
+                            @if (canEdit(survey)) {
+                                <button class="btn btn-sm btn-primary ms-2" (click)="editSurvey(survey)">
+                                    <i class="bi bi-pencil"></i> {{ 'EDIT' | translate }}
+                                </button>
+                            }
+                        </div>
+                        @if (survey.userId === userId) {
+                            <span class="badge bg-primary">{{ 'MY_SURVEY' | translate }}</span>
+                        }
+                    </div>
+                </div>
+            }
+            
+            @if (loading) {
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary"></div>
+                </div>
+            }
+        </div>
+    </section>
+</div>

@@ -1,0 +1,33 @@
+<div class="elections-app">
+    <nav class="main-nav">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="logo">
+                <i class="bi bi-ballot"></i> {{ 'TITLE' | translate }}
+            </div>
+            <div class="nav-links d-flex align-items-center gap-3">
+                <a routerLink="/survey" routerLinkActive="active">{{ 'SURVEY' | translate }}</a>
+                <a routerLink="/contact" routerLinkActive="active">{{ 'CONTACT_US' | translate }}</a>
+                <button class="btn btn-sm btn-outline-light lang-toggle" (click)="toggleLanguage()">
+                    <i class="bi bi-translate"></i> {{ 'LANG' | translate }}
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <h1>{{ 'TITLE' | translate }}</h1>
+        <p>{{ 'SUBTITLE' | translate }}</p>
+    </header>
+
+    <main class="container">
+        <router-outlet></router-outlet>
+    </main>
+
+    <footer class="app-footer mt-5 py-4 border-top">
+        <div class="container text-center">
+            <p class="text-dim mb-0">
+                &copy; {{ 'FOOTER_COPYRIGHT' | translate }}
+            </p>
+        </div>
+    </footer>
+</div>

@@ -1,0 +1,33 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-light);
+}
+
+[dir="rtl"] {
+  text-align: right;
+  
+  .ms-auto { margin-right: auto !important; margin-left: 0 !important; }
+  .me-auto { margin-left: auto !important; margin-right: 0 !important; }
+  .text-start { text-align: right !important; }
+  .text-end { text-align: left !important; }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+  
+  &:disabled {
+    opacity: 0.5;
+    background: #cbd5e1 !important;
+    color: #64748b !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+  }
+}

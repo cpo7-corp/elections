@@ -1,0 +1,6 @@
+services:
+  elections.api:
+    image: ${DOCKER_REGISTRY-}electionsapi
+    build:
+      context: .
+      dockerfile: Elections.Api/Dockerfile

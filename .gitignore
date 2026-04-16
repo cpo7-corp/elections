@@ -1,0 +1,32 @@
+# [Object] .gitignore for Node.js and .NET
+
+# Node.js
+node_modules/
+dist/
+.npm
+*.log
+.env
+.env.local
+
+# .NET / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+*.userprefs
+*.suo
+*.ide/
+*.swp
+*.lsp/
+*.sln.docstates
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore

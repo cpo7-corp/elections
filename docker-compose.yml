@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  db:
+    image: mongo:latest
+    container_name: elections-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - elections-db-data:/data/db
+    networks:
+      - elections-network
+    restart: always
+
+  api:
+    build:
+      context: .
+      dockerfile: Elections/elections.api/Dockerfile
+    container_name: elections-api
+    depends_on:
+      - db
+    ports:
+      - "7265:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - elections-network
+    restart: always
+
+  ui:
+    build:
+      context: ./elections-ui
+      dockerfile: Dockerfile
+    container_name: elections-ui
+    depends_on:
+      - api
+    ports:
+      - "8085:80"
+    networks:
+      - elections-network
+    restart: always
+
+networks:
+  elections-network:
+    driver: bridge
+
+volumes:
+  elections-db-data:

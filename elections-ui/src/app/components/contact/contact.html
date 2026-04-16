@@ -1,0 +1,61 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
+          <h1 class="text-center mb-4 fw-bold text-primary">{{ 'contactUsTitle' | translate }}</h1>
+          
+          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+            <!-- First and Last Name row -->
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-sm-6">
+                <label class="form-label fw-semibold">{{ 'firstName' | translate }}</label>
+                <input type="text" 
+                       formControlName="firstName" 
+                       class="form-control form-control-lg rounded-3">
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label fw-semibold">{{ 'lastName' | translate }}</label>
+                <input type="text" 
+                       formControlName="lastName" 
+                       class="form-control form-control-lg rounded-3">
+              </div>
+            </div>
+
+            <!-- Phone and Email -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">{{ 'phone' | translate }}</label>
+              <input type="tel" 
+                     formControlName="phone" 
+                     class="form-control form-control-lg rounded-3">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">{{ 'email' | translate }}</label>
+              <input type="email" 
+                     formControlName="email" 
+                     class="form-control form-control-lg rounded-3">
+            </div>
+
+            <!-- Message -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">{{ 'message' | translate }}</label>
+              <textarea formControlName="message" 
+                        rows="4" 
+                        class="form-control form-control-lg rounded-3"></textarea>
+            </div>
+
+            <button type="submit" 
+                    [disabled]="contactForm.invalid || loading" 
+                    class="btn btn-primary btn-lg w-100 fw-bold rounded-3 shadow-sm py-3 transition-transform">
+              @if (loading) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              {{ 'send' | translate }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
