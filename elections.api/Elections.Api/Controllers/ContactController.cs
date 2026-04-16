@@ -1,30 +1,18 @@
 using Elections.Api.Logic;
 using Elections.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Elections.Api.Core;
 
 namespace Elections.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ContactController(UserLogic userLogic, IHttpContextAccessor ctx) : ControllerBase
+public class ContactController(UserLogic userLogic) : ControllerBase
 {
     [HttpPost]
     public async Task<ApiResponse> Submit([FromBody] ContactReq req)
     {
-        return await userLogic.Contact(req, GetIp());
+        return await userLogic.Contact(req, HttpContext.GetClientIp());
     }
 
-    private string GetIp()
-    {
-        var httpContext = ctx.HttpContext;
-        if (httpContext == null) return "unknown";
-
-        var cfIp = httpContext.Request.Headers["cf-connecting-ip"].FirstOrDefault();
-        if (!string.IsNullOrEmpty(cfIp))
-        {
-            return cfIp.Trim();
-        }
-
-        return httpContext.Connection.RemoteIpAddress?.ToString()?.Trim() ?? "unknown";
-    }
 }

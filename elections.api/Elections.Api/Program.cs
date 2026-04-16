@@ -11,14 +11,12 @@ Console.WriteLine($"mode isQa: {isQa}");
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
 });
 
-builder.Services.AddSingleton<ConfigSvc>();
 builder.Services.AddCors();
 builder.Services.AddSingleton<ICorsPolicyProvider, InfraCorsPolicyProvider>();
 

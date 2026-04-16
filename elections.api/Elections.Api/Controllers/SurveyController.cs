@@ -2,11 +2,12 @@ using Elections.Api.Models;
 using Elections.Api.Logic;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Elections.Api.Core;
 
 namespace Elections.Api.Controllers;
 
 [ApiController]
-public class SurveyController(SurveyLogic surveyLogic, IHttpContextAccessor ctx) : ControllerBase
+public class SurveyController(SurveyLogic surveyLogic) : ControllerBase
 {
     [HttpGet("api/parties")]
     [ResponseCache(Duration = 3600)]
@@ -18,7 +19,7 @@ public class SurveyController(SurveyLogic surveyLogic, IHttpContextAccessor ctx)
     [HttpPost("api/surveys")]
     public async Task<ApiResponse> SaveSurvey([FromBody] SurveyReq req)
     {
-        return await surveyLogic.SaveSurvey(req, GetIp());
+        return await surveyLogic.SaveSurvey(req, HttpContext.GetClientIp());
     }
 
     [HttpGet("api/surveys")]
@@ -51,12 +52,4 @@ public class SurveyController(SurveyLogic surveyLogic, IHttpContextAccessor ctx)
         return await surveyLogic.ToggleReaction(id, userId, false);
     }
 
-    private string GetIp()
-    {
-        var httpContext = ctx.HttpContext;
-        if (httpContext == null) return "unknown";
-        var cfIp = httpContext.Request.Headers["cf-connecting-ip"].FirstOrDefault();
-        if (!string.IsNullOrEmpty(cfIp)) return cfIp.Trim();
-        return httpContext.Connection.RemoteIpAddress?.ToString()?.Trim() ?? "unknown";
-    }
 }

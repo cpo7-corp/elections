@@ -7,7 +7,7 @@ namespace Elections.Api.Logic;
 
 public class UserLogic(IMongoDatabase database)
 {
-    private readonly IMongoCollection<ContactDB> _contactCollection = database.GetCollection<ContactDB>("contact");
+    private readonly IMongoCollection<ContactDB> contactCollection = database.GetCollection<ContactDB>("contact");
 
     public async Task<ApiResponse> Contact(ContactReq req, string ip)
     {
@@ -20,7 +20,7 @@ public class UserLogic(IMongoDatabase database)
             var message = req.Message.Clean();
 
             var thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-30);
-            var recentEntry = await _contactCollection
+            var recentEntry = await contactCollection
                 .Find(x => x.Ip == ip && x.Created > thirtyMinutesAgo)
                 .FirstOrDefaultAsync();
 
@@ -40,7 +40,7 @@ public class UserLogic(IMongoDatabase database)
                 Created = DateTime.UtcNow
             };
 
-            await _contactCollection.InsertOneAsync(contactDB);
+            await contactCollection.InsertOneAsync(contactDB);
             return ApiResponse.FromSuccess();
         }
         catch (Exception ex)
