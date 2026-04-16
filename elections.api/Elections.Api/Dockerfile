@@ -5,10 +5,10 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Elections/Elections.Api/Elections.Api.csproj", "Elections/Elections.Api/"]
-RUN dotnet restore "Elections/Elections.Api/Elections.Api.csproj"
+COPY ["elections.api/Elections.Api/Elections.Api.csproj", "elections.api/Elections.Api/"]
+RUN dotnet restore "elections.api/Elections.Api/Elections.Api.csproj"
 COPY . .
-WORKDIR "/src/Elections/Elections.Api"
+WORKDIR "/src/elections.api/Elections.Api"
 RUN dotnet build "Elections.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
